@@ -24,7 +24,7 @@ pub(super) fn read_and_clean_error() -> Result<(), TchError> {
 }
 
 macro_rules! unsafe_torch {
-    ($e:expr) => {{
+    ($e:expr_2021) => {{
         let v = unsafe { $e };
         crate::wrappers::utils::read_and_clean_error().unwrap();
         v
@@ -32,7 +32,7 @@ macro_rules! unsafe_torch {
 }
 
 macro_rules! unsafe_torch_err {
-    ($e:expr) => {{
+    ($e:expr_2021) => {{
         let v = unsafe { $e };
         crate::wrappers::utils::read_and_clean_error()?;
         v

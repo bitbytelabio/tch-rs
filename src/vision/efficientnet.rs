@@ -283,33 +283,33 @@ impl ModuleT for EfficientNet {
     }
 }
 
-pub fn b0(p: &nn::Path, nclasses: i64) -> impl ModuleT {
+pub fn b0(p: &nn::Path, nclasses: i64) -> impl ModuleT + use<> {
     EfficientNet::new(p, MBConvConfig::b0(), nclasses)
 }
-pub fn b1(p: &nn::Path, nclasses: i64) -> impl ModuleT {
+pub fn b1(p: &nn::Path, nclasses: i64) -> impl ModuleT + use<> {
     EfficientNet::new(p, MBConvConfig::b1(), nclasses)
 }
-pub fn b2(p: &nn::Path, nclasses: i64) -> impl ModuleT {
+pub fn b2(p: &nn::Path, nclasses: i64) -> impl ModuleT + use<> {
     EfficientNet::new(p, MBConvConfig::b2(), nclasses)
 }
-pub fn b3(p: &nn::Path, nclasses: i64) -> impl ModuleT {
+pub fn b3(p: &nn::Path, nclasses: i64) -> impl ModuleT + use<> {
     EfficientNet::new(p, MBConvConfig::b3(), nclasses)
 }
-pub fn b4(p: &nn::Path, nclasses: i64) -> impl ModuleT {
+pub fn b4(p: &nn::Path, nclasses: i64) -> impl ModuleT + use<> {
     EfficientNet::new(p, MBConvConfig::b4(), nclasses)
 }
-pub fn b5(p: &nn::Path, nclasses: i64) -> impl ModuleT {
+pub fn b5(p: &nn::Path, nclasses: i64) -> impl ModuleT + use<> {
     EfficientNet::new(p, MBConvConfig::b5(), nclasses)
 }
-pub fn b6(p: &nn::Path, nclasses: i64) -> impl ModuleT {
+pub fn b6(p: &nn::Path, nclasses: i64) -> impl ModuleT + use<> {
     EfficientNet::new(p, MBConvConfig::b6(), nclasses)
 }
-pub fn b7(p: &nn::Path, nclasses: i64) -> impl ModuleT {
+pub fn b7(p: &nn::Path, nclasses: i64) -> impl ModuleT + use<> {
     EfficientNet::new(p, MBConvConfig::b7(), nclasses)
 }
 
 #[allow(clippy::many_single_char_names)]
-pub fn conv2d_same(vs: nn::Path, i: i64, o: i64, k: i64, c: ConvConfig) -> impl Module {
+pub fn conv2d_same(vs: nn::Path, i: i64, o: i64, k: i64, c: ConvConfig) -> impl Module + use<> {
     let conv2d = nn::conv2d(vs, i, o, k, c);
     let s = c.stride;
     nn::func(move |xs| {

@@ -9,7 +9,7 @@ fn conv2d(p: nn::Path, c_in: i64, c_out: i64, ksize: i64, padding: i64, stride: 
     nn::conv2d(p, c_in, c_out, ksize, conv2d_cfg)
 }
 
-fn downsample(p: nn::Path, c_in: i64, c_out: i64, stride: i64) -> impl ModuleT {
+fn downsample(p: nn::Path, c_in: i64, c_out: i64, stride: i64) -> impl ModuleT + use<> {
     if stride != 1 || c_in != c_out {
         nn::seq_t().add(conv2d(&p / "0", c_in, c_out, 1, 0, stride)).add(nn::batch_norm2d(
             &p / "1",
@@ -21,7 +21,7 @@ fn downsample(p: nn::Path, c_in: i64, c_out: i64, stride: i64) -> impl ModuleT {
     }
 }
 
-fn basic_block(p: nn::Path, c_in: i64, c_out: i64, stride: i64) -> impl ModuleT {
+fn basic_block(p: nn::Path, c_in: i64, c_out: i64, stride: i64) -> impl ModuleT + use<> {
     let conv1 = conv2d(&p / "conv1", c_in, c_out, 3, 1, stride);
     let bn1 = nn::batch_norm2d(&p / "bn1", c_out, Default::default());
     let conv2 = conv2d(&p / "conv2", c_out, c_out, 3, 1, 1);
@@ -33,7 +33,7 @@ fn basic_block(p: nn::Path, c_in: i64, c_out: i64, stride: i64) -> impl ModuleT 
     })
 }
 
-fn basic_layer(p: nn::Path, c_in: i64, c_out: i64, stride: i64, cnt: i64) -> impl ModuleT {
+fn basic_layer(p: nn::Path, c_in: i64, c_out: i64, stride: i64, cnt: i64) -> impl ModuleT + use<> {
     let mut layer = nn::seq_t().add(basic_block(&p / "0", c_in, c_out, stride));
     for block_index in 1..cnt {
         layer = layer.add(basic_block(&p / &block_index.to_string(), c_out, c_out, 1))
@@ -97,7 +97,7 @@ pub fn resnet34_no_final_layer(p: &nn::Path) -> FuncT<'static> {
 
 // Bottleneck versions for ResNet 50, 101, and 152.
 
-fn bottleneck_block(p: nn::Path, c_in: i64, c_out: i64, stride: i64, e: i64) -> impl ModuleT {
+fn bottleneck_block(p: nn::Path, c_in: i64, c_out: i64, stride: i64, e: i64) -> impl ModuleT + use<> {
     let e_dim = e * c_out;
     let conv1 = conv2d(&p / "conv1", c_in, c_out, 1, 0, 1);
     let bn1 = nn::batch_norm2d(&p / "bn1", c_out, Default::default());
@@ -120,7 +120,7 @@ fn bottleneck_block(p: nn::Path, c_in: i64, c_out: i64, stride: i64, e: i64) -> 
     })
 }
 
-fn bottleneck_layer(p: nn::Path, c_in: i64, c_out: i64, stride: i64, cnt: i64) -> impl ModuleT {
+fn bottleneck_layer(p: nn::Path, c_in: i64, c_out: i64, stride: i64, cnt: i64) -> impl ModuleT + use<> {
     let mut layer = nn::seq_t().add(bottleneck_block(&p / "0", c_in, c_out, stride, 4));
     for block_index in 1..cnt {
         layer = layer.add(bottleneck_block(&p / &block_index.to_string(), 4 * c_out, c_out, 1, 4))
@@ -135,7 +135,7 @@ fn bottleneck_resnet(
     c2: i64,
     c3: i64,
     c4: i64,
-) -> impl ModuleT {
+) -> impl ModuleT + use<> {
     let conv1 = conv2d(p / "conv1", 3, 64, 7, 3, 2);
     let bn1 = nn::batch_norm2d(p / "bn1", 64, Default::default());
     let layer1 = bottleneck_layer(p / "layer1", 64, 64, 1, c1);
@@ -158,26 +158,26 @@ fn bottleneck_resnet(
     })
 }
 
-pub fn resnet50(p: &nn::Path, num_classes: i64) -> impl ModuleT {
+pub fn resnet50(p: &nn::Path, num_classes: i64) -> impl ModuleT + use<> {
     bottleneck_resnet(p, Some(num_classes), 3, 4, 6, 3)
 }
 
-pub fn resnet50_no_final_layer(p: &nn::Path) -> impl ModuleT {
+pub fn resnet50_no_final_layer(p: &nn::Path) -> impl ModuleT + use<> {
     bottleneck_resnet(p, None, 3, 4, 6, 3)
 }
 
-pub fn resnet101(p: &nn::Path, num_classes: i64) -> impl ModuleT {
+pub fn resnet101(p: &nn::Path, num_classes: i64) -> impl ModuleT + use<> {
     bottleneck_resnet(p, Some(num_classes), 3, 4, 23, 3)
 }
 
-pub fn resnet101_no_final_layer(p: &nn::Path) -> impl ModuleT {
+pub fn resnet101_no_final_layer(p: &nn::Path) -> impl ModuleT + use<> {
     bottleneck_resnet(p, None, 3, 4, 23, 3)
 }
 
-pub fn resnet152(p: &nn::Path, num_classes: i64) -> impl ModuleT {
+pub fn resnet152(p: &nn::Path, num_classes: i64) -> impl ModuleT + use<> {
     bottleneck_resnet(p, Some(num_classes), 3, 8, 36, 3)
 }
 
-pub fn resnet150_no_final_layer(p: &nn::Path) -> impl ModuleT {
+pub fn resnet150_no_final_layer(p: &nn::Path) -> impl ModuleT + use<> {
     bottleneck_resnet(p, None, 3, 8, 36, 3)
 }

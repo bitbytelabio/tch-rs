@@ -4,7 +4,7 @@
 //! <https://openreview.net/forum?id=TVHS5Y4dNvM>
 use crate::nn;
 
-fn block(p: nn::Path, dim: i64, kernel_size: i64) -> impl nn::ModuleT {
+fn block(p: nn::Path, dim: i64, kernel_size: i64) -> impl nn::ModuleT + use<> {
     let conv2d_cfg = nn::ConvConfig { groups: dim, ..Default::default() };
     let p_fn = &(&p / "0") / "fn";
     let conv1 =

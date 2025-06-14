@@ -19,7 +19,7 @@ pub trait Shape {
 }
 
 macro_rules! impl_shape {
-    ($v:expr) => {
+    ($v:expr_2021) => {
         impl Shape for [i64; $v] {
             fn to_shape(&self) -> Box<[i64]> {
                 Box::new(*self)

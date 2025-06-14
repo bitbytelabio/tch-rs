@@ -1,7 +1,7 @@
 //! InceptionV3.
 use crate::{Tensor, nn, nn::ModuleT};
 
-fn conv_bn(p: nn::Path, c_in: i64, c_out: i64, ksize: i64, pad: i64, stride: i64) -> impl ModuleT {
+fn conv_bn(p: nn::Path, c_in: i64, c_out: i64, ksize: i64, pad: i64, stride: i64) -> impl ModuleT + use<> {
     let conv2d_cfg = nn::ConvConfig { stride, padding: pad, bias: false, ..Default::default() };
     let bn_cfg = nn::BatchNormConfig { eps: 0.001, ..Default::default() };
     nn::seq_t()
@@ -10,7 +10,7 @@ fn conv_bn(p: nn::Path, c_in: i64, c_out: i64, ksize: i64, pad: i64, stride: i64
         .add_fn(|xs| xs.relu())
 }
 
-fn conv_bn2(p: nn::Path, c_in: i64, c_out: i64, ksize: [i64; 2], pad: [i64; 2]) -> impl ModuleT {
+fn conv_bn2(p: nn::Path, c_in: i64, c_out: i64, ksize: [i64; 2], pad: [i64; 2]) -> impl ModuleT + use<> {
     let conv2d_cfg =
         nn::ConvConfigND::<[i64; 2]> { padding: pad, bias: false, ..Default::default() };
     let bn_cfg = nn::BatchNormConfig { eps: 0.001, ..Default::default() };
@@ -24,7 +24,7 @@ fn max_pool2d(xs: &Tensor, ksize: i64, stride: i64) -> Tensor {
     xs.max_pool2d([ksize, ksize], [stride, stride], [0, 0], [1, 1], false)
 }
 
-fn inception_a(p: nn::Path, c_in: i64, c_pool: i64) -> impl ModuleT {
+fn inception_a(p: nn::Path, c_in: i64, c_pool: i64) -> impl ModuleT + use<> {
     let b1 = conv_bn(&p / "branch1x1", c_in, 64, 1, 0, 1);
     let b2_1 = conv_bn(&p / "branch5x5_1", c_in, 48, 1, 0, 1);
     let b2_2 = conv_bn(&p / "branch5x5_2", 48, 64, 5, 2, 1);
@@ -41,7 +41,7 @@ fn inception_a(p: nn::Path, c_in: i64, c_pool: i64) -> impl ModuleT {
     })
 }
 
-fn inception_b(p: nn::Path, c_in: i64) -> impl ModuleT {
+fn inception_b(p: nn::Path, c_in: i64) -> impl ModuleT + use<> {
     let b1 = conv_bn(&p / "branch3x3", c_in, 384, 3, 0, 2);
     let b2_1 = conv_bn(&p / "branch3x3dbl_1", c_in, 64, 1, 0, 1);
     let b2_2 = conv_bn(&p / "branch3x3dbl_2", 64, 96, 3, 1, 1);
@@ -54,7 +54,7 @@ fn inception_b(p: nn::Path, c_in: i64) -> impl ModuleT {
     })
 }
 
-fn inception_c(p: nn::Path, c_in: i64, c7: i64) -> impl ModuleT {
+fn inception_c(p: nn::Path, c_in: i64, c7: i64) -> impl ModuleT + use<> {
     let b1 = conv_bn(&p / "branch1x1", c_in, 192, 1, 0, 1);
 
     let b2_1 = conv_bn(&p / "branch7x7_1", c_in, c7, 1, 0, 1);
@@ -83,7 +83,7 @@ fn inception_c(p: nn::Path, c_in: i64, c7: i64) -> impl ModuleT {
     })
 }
 
-fn inception_d(p: nn::Path, c_in: i64) -> impl ModuleT {
+fn inception_d(p: nn::Path, c_in: i64) -> impl ModuleT + use<> {
     let b1_1 = conv_bn(&p / "branch3x3_1", c_in, 192, 1, 0, 1);
     let b1_2 = conv_bn(&p / "branch3x3_2", 192, 320, 3, 0, 2);
 
@@ -100,7 +100,7 @@ fn inception_d(p: nn::Path, c_in: i64) -> impl ModuleT {
     })
 }
 
-fn inception_e(p: nn::Path, c_in: i64) -> impl ModuleT {
+fn inception_e(p: nn::Path, c_in: i64) -> impl ModuleT + use<> {
     let b1 = conv_bn(&p / "branch1x1", c_in, 320, 1, 0, 1);
 
     let b2_1 = conv_bn(&p / "branch3x3_1", c_in, 384, 1, 0, 1);
@@ -129,7 +129,7 @@ fn inception_e(p: nn::Path, c_in: i64) -> impl ModuleT {
     })
 }
 
-pub fn v3(p: &nn::Path, nclasses: i64) -> impl ModuleT {
+pub fn v3(p: &nn::Path, nclasses: i64) -> impl ModuleT + use<> {
     nn::seq_t()
         .add(conv_bn(p / "Conv2d_1a_3x3", 3, 32, 3, 0, 2))
         .add(conv_bn(p / "Conv2d_2a_3x3", 32, 32, 3, 0, 1))
