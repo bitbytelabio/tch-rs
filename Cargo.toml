@@ -1,8 +1,8 @@
 [package]
 name = "tch"
-version = "0.20.0"
+version = "0.20.1"
 authors = ["Laurent Mazare <lmazare@gmail.com>"]
-edition = "2024"
+edition = "2021"
 build = "build.rs"
 
 description = "Rust wrappers for the PyTorch C++ api (libtorch)."
@@ -33,7 +33,7 @@ serde_json = { version = "1.0.96", optional = true }
 memmap2 = { version = "0.9.5", optional = true }
 
 [dev-dependencies]
-anyhow = "^1.0.60"
+anyhow = "^1"
 
 [workspace]
 members = ["torch-sys", "pyo3-tch", "examples/python-extension"]
