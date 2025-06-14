@@ -28,9 +28,27 @@ typedef void *module;
 typedef void *ivalue;
 #endif
 
-// MPS API
-void at_mps_syncronize();
-// void at_mps_clear_cache();
+// MPS Allocator FFI
+typedef void *mps_allocator;
+
+mps_allocator mps_get_allocator(int shared);
+void mps_empty_cache(mps_allocator allocator);
+void mps_free_inactive_buffers(mps_allocator allocator);
+int64_t mps_get_unaligned_buffer_size(mps_allocator allocator, const void *ptr);
+int64_t mps_get_buffer_id(mps_allocator allocator, const void *ptr);
+int mps_is_shared_buffer(mps_allocator allocator, const void *ptr);
+int mps_is_shared_storage_supported(mps_allocator allocator);
+char *mps_format_size(mps_allocator allocator, size_t size);
+void mps_set_low_watermark_ratio(mps_allocator allocator, double ratio);
+void mps_set_high_watermark_ratio(mps_allocator allocator, double ratio);
+int64_t mps_get_low_watermark_value(mps_allocator allocator);
+size_t mps_get_low_watermark_limit(mps_allocator allocator);
+size_t mps_get_high_watermark_limit(mps_allocator allocator);
+size_t mps_get_total_allocated_memory(mps_allocator allocator);
+size_t mps_get_current_allocated_memory(mps_allocator allocator);
+size_t mps_get_driver_allocated_memory(mps_allocator allocator);
+size_t mps_get_recommended_max_memory(mps_allocator allocator);
+void mps_free_allocator(mps_allocator allocator);
 
 char *get_and_reset_last_err(); // thread-local
 void at_manual_seed(int64_t);

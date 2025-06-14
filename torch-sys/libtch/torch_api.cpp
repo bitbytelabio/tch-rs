@@ -1,5 +1,6 @@
 #include "torch_api.h"
 #include <ATen/autocast_mode.h>
+#include <ATen/mps/MPSAllocatorInterface.h>
 #include <stdexcept>
 #include <torch/csrc/autograd/engine.h>
 #include <torch/csrc/jit/codegen/cuda/interface.h>
@@ -1356,3 +1357,131 @@ void ati_free(ivalue i) { delete (i); }
 void at_set_graph_executor_optimize(bool o) {
   torch::jit::setGraphExecutorOptimize(o);
 }
+
+#ifdef __APPLE__
+// MPS Allocator Implementation
+mps_allocator mps_get_allocator(int shared) {
+  PROTECT(at::mps::IMPSAllocator *allocator =
+              at::mps::getIMPSAllocator(shared != 0);
+          return (mps_allocator)allocator;)
+  return nullptr;
+}
+
+void mps_empty_cache(mps_allocator allocator) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          mps_alloc->emptyCache();)
+}
+
+void mps_free_inactive_buffers(mps_allocator allocator) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          mps_alloc->freeInactiveBuffers();)
+}
+
+int64_t mps_get_unaligned_buffer_size(mps_allocator allocator,
+                                      const void *ptr) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->getUnalignedBufferSize(ptr);)
+  return -1;
+}
+
+int64_t mps_get_buffer_id(mps_allocator allocator, const void *ptr) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->getBufferId(ptr);)
+  return -1;
+}
+
+int mps_is_shared_buffer(mps_allocator allocator, const void *ptr) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->isSharedBuffer(ptr) ? 1 : 0;)
+  return 0;
+}
+
+int mps_is_shared_storage_supported(mps_allocator allocator) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->isSharedStorageSupported() ? 1 : 0;)
+  return 0;
+}
+
+char *mps_format_size(mps_allocator allocator, size_t size) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          std::string formatted = mps_alloc->formatSize(size);
+          return strdup(formatted.c_str());)
+  return nullptr;
+}
+
+void mps_set_low_watermark_ratio(mps_allocator allocator, double ratio) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          mps_alloc->setLowWatermarkRatio(ratio);)
+}
+
+void mps_set_high_watermark_ratio(mps_allocator allocator, double ratio) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          mps_alloc->setHighWatermarkRatio(ratio);)
+}
+
+int64_t mps_get_low_watermark_value(mps_allocator allocator) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->getLowWatermarkValue();)
+  return -1;
+}
+
+size_t mps_get_low_watermark_limit(mps_allocator allocator) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->getLowWatermarkLimit();)
+  return 0;
+}
+
+size_t mps_get_high_watermark_limit(mps_allocator allocator) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->getHighWatermarkLimit();)
+  return 0;
+}
+
+size_t mps_get_total_allocated_memory(mps_allocator allocator) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->getTotalAllocatedMemory();)
+  return 0;
+}
+
+size_t mps_get_current_allocated_memory(mps_allocator allocator) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->getCurrentAllocatedMemory();)
+  return 0;
+}
+
+size_t mps_get_driver_allocated_memory(mps_allocator allocator) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->getDriverAllocatedMemory();)
+  return 0;
+}
+
+size_t mps_get_recommended_max_memory(mps_allocator allocator) {
+  PROTECT(at::mps::IMPSAllocator *mps_alloc =
+              (at::mps::IMPSAllocator *)allocator;
+          return mps_alloc->getRecommendedMaxMemory();)
+  return 0;
+}
+
+void mps_free_allocator(mps_allocator allocator) {
+  // Note: Don't delete the allocator as it's managed by PyTorch
+  // This is just for consistency with the FFI pattern
+}
+#else
+// Stub implementations that return errors
+mps_allocator mps_get_allocator(int shared) { return nullptr; }
+#endif
