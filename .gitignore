@@ -18,3 +18,4 @@ __pycache__
 *.dylib
 llama-tokenizer.json
 libtorch
+_opam
