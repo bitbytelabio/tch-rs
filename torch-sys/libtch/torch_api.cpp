@@ -39,10 +39,8 @@ void at_manual_seed(int64_t seed)
 
 void at_mps_empty_cache()
 {
-#ifdef USE_MPS
-  PROTECT(
-      c10::mps::MPSAllocator::emptyCache();)
-#endif
+    PROTECT(
+    c10::mps::MPSAllocator::emptyCache();)
 }
 
 vector<torch::Tensor> of_carray_tensor(torch::Tensor **vs, int len)
