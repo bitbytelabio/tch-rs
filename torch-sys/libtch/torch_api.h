@@ -30,7 +30,7 @@ typedef void *ivalue;
 
 // MPS API
 void at_mps_syncronize();
-void at_mps_clear_cache();
+// void at_mps_clear_cache();
 
 char *get_and_reset_last_err(); // thread-local
 void at_manual_seed(int64_t);
