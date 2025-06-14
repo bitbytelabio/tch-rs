@@ -20,3 +20,4 @@ llama-tokenizer.json
 libtorch
 _opam
 .DS_Store
+build
