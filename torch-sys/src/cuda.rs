@@ -27,4 +27,6 @@ unsafe extern "C" {
 
     /// Sets CUDNN benchmark mode.
     pub fn atc_set_benchmark_cudnn(b: c_int);
+
+    pub fn atc_empty_cache();
 }
