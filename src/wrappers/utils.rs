@@ -6,8 +6,8 @@ use std::io;
 // freed.
 pub(super) unsafe fn ptr_to_string(ptr: *mut c_char) -> Option<String> {
     if !ptr.is_null() {
-        let str = std::ffi::CStr::from_ptr(ptr).to_string_lossy().into_owned();
-        libc::free(ptr as *mut libc::c_void);
+        let str = unsafe { std::ffi::CStr::from_ptr(ptr).to_string_lossy().into_owned() };
+        unsafe { libc::free(ptr as *mut libc::c_void) };
         Some(str)
     } else {
         None

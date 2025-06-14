@@ -99,7 +99,7 @@ impl Header {
                     _ => {
                         return Err(TchError::FileFormat(format!(
                             "unable to parse header {header}"
-                        )))
+                        )));
                     }
                 }
             }
@@ -112,7 +112,7 @@ impl Header {
                 _ => {
                     return Err(TchError::FileFormat(format!(
                         "unknown fortran_order {fortran_order}"
-                    )))
+                    )));
                 }
             },
         };
@@ -143,7 +143,7 @@ impl Header {
                     "F" | "F4" | "c8" => Kind::ComplexFloat,
                     "D" | "F8" | "c16" => Kind::ComplexDouble,
                     descr => {
-                        return Err(TchError::FileFormat(format!("unrecognized descr {descr}")))
+                        return Err(TchError::FileFormat(format!("unrecognized descr {descr}")));
                     }
                 }
             }
@@ -235,7 +235,7 @@ impl crate::Tensor {
         path: P,
     ) -> Result<(), TchError> {
         let mut zip = zip::ZipWriter::new(File::create(path.as_ref())?);
-        let options =
+        let options: zip::write::FileOptions<()> =
             zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Stored);
 
         for (name, tensor) in ts.iter() {

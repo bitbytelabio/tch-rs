@@ -10,7 +10,7 @@ use anyhow::{Context, Result};
 use std::path::{Path, PathBuf};
 use std::{env, fs, io};
 
-const TORCH_VERSION: &str = "2.7.0";
+const TORCH_VERSION: &str = "2.7.1";
 const PYTHON_PRINT_PYTORCH_DETAILS: &str = r"
 import torch
 from torch.utils import cpp_extension
@@ -70,7 +70,8 @@ fn download<P: AsRef<Path>>(source_url: &str, target_file: P) -> anyhow::Result<
     if response_code != 200 {
         anyhow::bail!("Unexpected response code {} for {}", response_code, source_url)
     }
-    let mut reader = response.into_reader();
+    let mut body = response.into_body();
+    let mut reader = body.as_reader();
     std::io::copy(&mut reader, &mut writer)?;
     Ok(())
 }
@@ -104,7 +105,8 @@ fn get_pypi_wheel_url_for_aarch64_macosx() -> anyhow::Result<String> {
     if response_code != 200 {
         anyhow::bail!("Unexpected response code {} for {}", response_code, pypi_url)
     }
-    let pypi_package: PyPiPackage = response.into_json()?;
+    let mut body = response.into_body();
+    let pypi_package: PyPiPackage = body.read_json()?;
     let urls = pypi_package.urls;
     let expected_filename = format!("torch-{TORCH_VERSION}-cp311-none-macosx_11_0_arm64.whl");
     let url = urls.iter().find_map(|pypi_url: &PyPiPackageUrl| {

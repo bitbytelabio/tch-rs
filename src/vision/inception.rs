@@ -1,5 +1,5 @@
 //! InceptionV3.
-use crate::{nn, nn::ModuleT, Tensor};
+use crate::{Tensor, nn, nn::ModuleT};
 
 fn conv_bn(p: nn::Path, c_in: i64, c_out: i64, ksize: i64, pad: i64, stride: i64) -> impl ModuleT {
     let conv2d_cfg = nn::ConvConfig { stride, padding: pad, bias: false, ..Default::default() };
