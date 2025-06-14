@@ -54,8 +54,6 @@ typedef void *ivalue;
   void at__amp_non_finite_check_and_unscale(tensor, tensor, tensor);
 
   void at_autocast_clear_cache();
-  void at_mps_empty_cache();
-  void at_cuda_empty_cache();
   int at_autocast_decrement_nesting();
   int at_autocast_increment_nesting();
   bool at_autocast_is_enabled();

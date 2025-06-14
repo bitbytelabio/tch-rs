@@ -37,12 +37,6 @@ void at_manual_seed(int64_t seed)
   torch::manual_seed(seed);
 }
 
-void at_mps_empty_cache()
-{
-    PROTECT(
-    c10::mps::MPSAllocator::emptyCache();)
-}
-
 vector<torch::Tensor> of_carray_tensor(torch::Tensor **vs, int len)
 {
   vector<torch::Tensor> result;
