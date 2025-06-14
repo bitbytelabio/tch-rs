@@ -125,9 +125,9 @@ pub fn version_cudnn() -> i64 {
 pub fn version_cudart() -> i64 {
     unsafe_torch!(torch_sys::at_context_version_cudart())
 }
-pub fn mps_synconize() {
-    unsafe_torch!(torch_sys::at_mps_synchronize())
-}
+// pub fn mps_synconize() {
+//     unsafe_torch!(torch_sys::at_mps_synchronize())
+// }
 
 /// Check whether the vulkan backend is available. None that this
 /// backend is not included by default as of PyTorch 2.0.0.

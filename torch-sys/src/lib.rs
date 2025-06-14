@@ -145,7 +145,7 @@ unsafe extern "C" {
 
     pub fn at_manual_seed(seed: i64);
     // pub fn at_mps_empty_cache();
-    pub fn at_mps_synchronize();
+    // pub fn at_mps_synchronize();
     pub fn at_set_graph_executor_optimize(b: bool);
     pub fn at_context_has_openmp() -> bool;
     pub fn at_context_has_mkl() -> bool;
